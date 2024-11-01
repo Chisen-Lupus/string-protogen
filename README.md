@@ -1,6 +1,6 @@
 # string-protogen
 
-这是用于重置Protogen "String"的仓库. 
+这是用于重置Protogen "String" 的仓库. 
 
 ## Timeline
 

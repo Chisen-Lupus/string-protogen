@@ -11,7 +11,7 @@
     /* Set up basic styling */
     body {
       margin: 0;
-      background-color: gray;
+      background-color: black;
       overflow: hidden;
       display: flex;
       justify-content: center;
@@ -19,27 +19,35 @@
       height: 100vh;
     }
     .canvas {
-      position: relative;
+      position: absolute;
+      /* testing purpose */
       width: 80vw;
-      height: 80vh;
-      --test-path: "M10,20 Q 50,40 90,20";
-      --mouth-path-closed: "M10,20 Q 40,40 70,20 T 130,20 T 190,40 T 250,20"; /* Variable for closed mouth */
-      --mouth-path-open: "M10,20 Q 40,50 70,20 T 130,10 T 190,50 T 250,20";   /* Variable for open mouth */
-      --eye-mark-path: "M10,10 Q 30,0 50,10 T 90,10 L 90,50 Q 70,60 50,50 T 10,50 Z"; /* Variable for eye mark */
+      height: 50vw;
+      border: 1px solid gray; /* Dark gray border */
+      --test-path: "M10,10 Q 30,0 50,10 T 90,10 M 90,0 T 80,50 T 80,80 T 80,90 Q 70,60 50,50 T 10,50 Z";
+      --path-part1: "M10,10 Q 30,0 50,10";
+      --path-part2: "T 90,10 L 90,50";
+      --path-part3: "Q 70,60 50,50 T 10,50 Z";
+      /* mouth paths */
+      --mouth-path-closed: "M10,20 Q 40,40 70,20 T 130,20 T 190,40 T 250,20"; 
+      --mouth-path-open: "M10,20 Q 40,50 70,20 T 130,10 T 190,50 T 250,20";  
+      /* eye mark path */
+      /* eye paths */
       --upper-lid-path: "M10,20 Q 50,0 90,20";
-      --lower-lid-path: "M10,40 Q 50,60 90,40";
-      --upper-lid-mask-path: "M10,15 Q 50,-5 90,15"; /* Adjust as needed */
-      --lower-lid-mask-path: "M10,25 Q 50,45 90,25"; /* Adjust as needed */
-      --pupil-path: "M50,21 Q48,25 50,29 Q52,25 50,21"; /* Adjust coordinates for desired shape */
+      --lower-lid-path: "M10,35 Q 50,45 90,25";
+      --upper-lid-mask-path: "M10,15 Q 50,-5 90,15"; 
+      --lower-lid-mask-path: "M10,40 Q 50,50 90,30"; 
+      --pupil-path: "M50,21 Q48,25 50,29 Q52,25 50,21"; 
     }
 
     /* Define the eye */
     .eye {
       position: absolute;
-      top: 10%;
-      right: 10%;
-      width: 20%;
-      height: 20%;
+      top: 0%;
+      left: 40%;
+      width: 60%;
+      height: 50%;
+      background-color: rgba(255, 255, 255, 0.1); 
     }
 
     /* Black mask for eyelids to create a covering effect */
@@ -53,7 +61,7 @@
     .eye .lower-lid-mask {
       d: path(var(--lower-lid-mask-path));
       animation: lower-blink 3s infinite;
-      transform: translateY(20px); /* Adjust positioning as needed */
+      /* transform: translateY(20px); Adjust positioning as needed */
     }
 
     /* Red eyelids */
@@ -88,41 +96,32 @@
       animation: look-around-pupil 10s infinite ease-in-out;
     }
 
+    /* Define the eye mark with curved edges */
+    .eye-mark {
+      position: absolute;
+      top: 28%;
+      left: 45%;
+      width: 50%;
+      height: 30%;
+      background-color: rgba(255, 255, 255, 0.1); 
+      /* animation: pulse 5s infinite; */
+    }
+    .eye-mark-path {
+      fill: red;
+      /* d: path(var(--eye-mark-path-1) + var(--eye-mark-path-2)); */
+    }
+
     /* Define the nose */
     .nose-curve {
       position: absolute;
       top: 35%;
-      left: 60%;
+      left: 10%;
       width: 10%;
       height: 20%;
       background-color: red;
-      border-radius: 50%;
-      clip-path: polygon(0 100%, 50% 0, 100% 100%);
-      transform: rotate(45deg);
-    }
-    .nose-tip {
-      position: absolute;
-      top: 50%;
-      left: 40%;
-      width: 10%;
-      height: 15%;
-      background-color: red;
-      clip-path: polygon(0 100%, 50% 0, 100% 100%);
-      transform: rotate(-45deg);
-    }
-
-    /* Define the eye mark with curved edges */
-    .eye-mark {
-      position: absolute;
-      top: 20%;
-      right: 25%;
-      width: 20%;
-      height: 20%;
-      animation: pulse 5s infinite;
-    }
-    .eye-mark path {
-      fill: red;
-      d: path(var(--eye-mark-path));
+      /* border-radius: 50%; */
+      clip-path: polygon(20% 100%, 0 20%, 100% 0, 30% 35%);
+      /* transform: rotate(45deg); */
     }
 
     /* Define the mouth using SVG */
@@ -150,16 +149,20 @@
     }
     .test path {
       fill: red;
-      d: path(var(--test-path));
+      /* d: path(var(--test-path)); */
+      /* d: path(var(--path-part1) var(--path-part2) var(--path-part3)); */
+    }
+    .hidden {
+      display: none;
     }
 
     /* Animations */
     @keyframes upper-blink {
-      0%, 90% {
+      0%, 87% {
         transform: translateY(0); /* Default position */
       }
-      95% {
-        transform: translateY(20px); /* Move down to cover part of the eyeball */
+      92%, 95% {
+        transform: translateY(15px); /* Move down to cover part of the eyeball */
       }
       100% {
         transform: translateY(0); /* Move back up */
@@ -167,11 +170,11 @@
     }
 
     @keyframes lower-blink {
-      0%, 90% {
+      0%, 87% {
         transform: translateY(0); /* Default position */
       }
-      95% {
-        transform: translateY(-20px); /* Move up to cover part of the eyeball */
+      92%, 95% {
+        transform: translateY(-5px); /* Move up to cover part of the eyeball */
       }
       100% {
         transform: translateY(0); /* Move back down */
@@ -259,9 +262,11 @@
     <div class="nose-tip"></div>
 
     <!-- Eye mark using SVG path with curved edges -->
-    <svg class="eye-mark" viewBox="0 0 100 100">
-      <path />
-    </svg>
+    <div class="eye-mark">
+      <svg viewBox="0 0 100 100" preserveAspectRatio="none" width="100%" height="100%">
+        <path class="eye-mark-path" />
+      </svg>
+    </div>
 
     <!-- Mouth using SVG -->
     <svg class="mouth" viewBox="0 0 260 40">
@@ -269,11 +274,22 @@
     </svg>
 
     <!-- test -->
-    <!-- <svg class="test" viewBox="0 0 100 100">
+    <svg class="test" viewBox="0 0 100 100">
       <path />
-    </svg> -->
+    </svg>
 
   </div>
+
+  <script>
+    const eye_mark = `
+      M 5,90 T 20,80 T 60,42 T 90,12 T 95,10
+      L 95,10 T 85,23 T 65,51 T 55,65
+      L 55,65 T 70,56 T 85,47 T 92,45
+      L 92,45 T 80,58 T 60,80 T 40,92 T 15,93 T 5,90
+    `;
+
+    document.querySelector(".eye-mark-path").setAttribute("d", eye_mark.trim());
+  </script>
 
 </body>
 

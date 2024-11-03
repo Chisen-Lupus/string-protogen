@@ -20,8 +20,8 @@
     .canvas {
       position: absolute;
       /* testing purpose */
-      width: 80vw;
-      height: 50vw;
+      width: 100vw; /* 80vw */ 
+      height: 62.5vw; /* 50vw */ 
       border: 1px solid gray; 
     }
 
@@ -30,8 +30,8 @@
     .eye-div {
       position: absolute;
       top: 0%;
-      left: 40%;
-      width: 60%;
+      left: 35%;
+      width: 65%;
       height: 50%;
     }
 
@@ -46,9 +46,14 @@
     }
 
     /* eyeball and pupil */
+    .eye-base {
+      fill: red;
+    }
     .eyeball {
       position: absolute;
-      fill: pink;
+      fill: none;
+      stroke: black;
+      stroke-width: 3;
       transition: transform 0.1s ease-in-out;
     }
     .pupil {
@@ -60,9 +65,9 @@
 
     .eye-mark-div {
       position: absolute;
-      top: 28%;
-      left: 45%;
-      width: 50%;
+      top: 27%;
+      left: 50%;
+      width: 48%;
       height: 30%;
     }
     .eye-mark {
@@ -73,8 +78,8 @@
 
     .nose-div {
       position: absolute;
-      top: 5%;
-      left: 5%;
+      top: 10%;
+      left: 0%;
       width: 15%;
       height: 25%;
     }
@@ -94,9 +99,9 @@
     .mouth {
       fill: none;
       stroke: red;
-      stroke-width: 2;
-      stroke-linecap: round;
-      transition: d 0.1s ease-in-out;
+      stroke-width: 1.4;
+      stroke-linecap: butt;
+      transition: d 3s ease-in-out;
     }
 
     /* testing purpose */
@@ -117,8 +122,9 @@
   <div class='canvas'>
 
     <!-- eye -->
-    <div class='eye-div showbox'>
+    <div class='eye-div'>
       <svg viewBox='0 0 100 50'>
+        <circle class='eye-base' />
         <circle class='eyeball' />
         <path class='pupil' />
         <path class='upper-mask' />
@@ -129,21 +135,21 @@
     </div>
 
     <!-- nose -->
-    <div class='nose-div showbox'>
+    <div class='nose-div'>
       <svg viewBox='0 0 100 100'>
         <path class='nose' />
       </svg>
     </div>
 
     <!-- eye mark -->
-    <div class='eye-mark-div showbox'>
+    <div class='eye-mark-div'>
       <svg viewBox='0 0 100 100'>
         <path class='eye-mark' />
       </svg>
     </div>
 
     <!-- mouth  -->
-    <div class='mouth-div showbox'>
+    <div class='mouth-div'>
       <svg viewBox='0 0 100 100'>
         <path class='mouth' />
       </svg>
@@ -169,39 +175,50 @@
     // eye mark
 
     const eyeMarkPath = `
-      M 5,90 T 20,80 T 60,42 T 90,12 T 95,10
-      L 95,10 T 85,23 T 65,51 T 55,65
-      L 55,65 T 70,56 T 85,47 T 92,45
-      L 92,45 T 80,58 T 60,80 T 40,92 T 15,93 T 5,90
-    `;
+      M 5,36 T 20,32 T 60,17 T 90,5 T 95,4
+      L 95,4 T 85,10 T 65,21 T 55,26
+      L 55,26 T 70,22 T 85,18 T 92,17
+      L 92,17 T 80,23 T 60,32 T 40,36 T 15,37 T 5,36
+    `.trim();
     const eyeMark = document.querySelector('.eye-mark')
-    eyeMark.setAttribute('d', eyeMarkPath.trim());
+    eyeMark.setAttribute('d', eyeMarkPath);
 
     // mouth
 
-    const mouthPathClosed = 'M10,20 Q 40,40 70,20 T 130,20 T 190,40 T 250,20';
-    const mouthPathOpen = 'M10,20 Q 40,50 70,20 T 130,10 T 190,50 T 250,20';
+    const mouthPathClose = 'M1,28 L 20,35 L 50,27 L 68,32 L 90,11 L 75,13 L 81 10';
+    const mouthPathOpen = 'M1,28 L 20,36 L 50,26 L 68,33 L 90,9 L 75,12 L 81 8';
     const mouth = document.querySelector('.mouth');
-    mouth.setAttribute('d', mouthPathClosed);
+    mouth.setAttribute('d', mouthPathClose);
 
     function toggleMouth() {
       const currentPath = mouth.getAttribute('d');
-      if (currentPath===mouthPathClosed) {
+      if (currentPath===mouthPathClose) {
         mouth.setAttribute('d', mouthPathOpen);
       } else {
-        mouth.setAttribute('d', mouthPathClosed);
+        mouth.setAttribute('d', mouthPathClose);
       }
     }
 
-    setInterval(toggleMouth, 1000);
+    setInterval(toggleMouth, 3000);
 
     // eyelid
 
-    // opened svg paths
-    const upperLidPathOpen = 'M10,20 Q 50,0 90,20';
-    const lowerLidPathOpen = 'M10,35 Q 50,45 90,25';
-    const upperMaskPathOpen = 'M10,15 Q 50,-5 90,15';
-    const lowerMaskPathOpen = 'M10,40 Q 50,50 90,30';
+    // opened svg paths, all paths are drawn clockwise
+    const upperLidPathOpen = `
+      M 2,30 C 12,10 50,5 98,2
+      C 60,7 40,10 25,16 C 10,22 18,26 2,30 
+    `.trim();
+    const lowerLidPathOpen = `
+      M 75,32 C 80,29 88,27 91,19 C 91,22 90,25 96,26 C 88,26 80,31 75,32
+    `.trim();
+    const upperMaskPathOpen = `
+      M 2,33 L 0,33 L 0,-100 L 100,-100 L 100 5 L 98,5
+      L 98,5 C 60,10 40,12 25,19 C 10,25 18,29 2,33
+    `.trim();
+    const lowerMaskPathOpen = `
+      M 2,38 C 50,38 70,32 75,29 C 80,26 88,24 91,16 L 98,16
+      L 98,100 L 2,100 Z
+    `.trim();
     // closed svg states
     const upperLidPathClose = 'M10,30 Q 50,10 90,30';
     const lowerLidPathClose = 'M10,25 Q 50,35 90,15';
@@ -233,46 +250,50 @@
       }, 200); // delay before reopening
     }
 
-    // blink every 1 second (adjust as needed)
-    setInterval(blinkEye, 5000);
+    // blink 
+    // setInterval(blinkEye, 5000);
 
-    // pupil
+    // eyeball and pupil
 
-    const eyeballAttributes = {cx: 50, cy: 25, r: 10};
-    const pupilPath = 'M50,21 Q48,25 50,29 Q52,25 50,21'; 
+    const eyeballAttributes = {cx: 50, cy: 15, r: 23};
+    const eyeBaseAttributes = {cx: 46, cy: -6, r: 50};
+    const pupilPath = 'M50,-10 Q 45,20 50,33 Q 55,20 50,-10'; 
     const eyeball = document.querySelector('.eyeball');
+    const eyeBase = document.querySelector('.eye-base');
     const pupil = document.querySelector('.pupil');
+    eyeBase.setAttributes(eyeBaseAttributes);
     eyeball.setAttributes(eyeballAttributes);
     pupil.setAttribute('d', pupilPath);
-    const eyeballPositions = [0, -3, 0, 3, 0];  
-    const pupilPositions = [0, -5, 0, 5, 0];  
 
-    function animateLookAround() {
+    function lookAround() {
+      const eyeballPositions = [0, -5, 0, 5, 0];  
+      const pupilPositions = [0, -10, 0, 10, 0];  
       eyeball.style.transform = `translateX(${eyeballPositions[0]}px)`;
       pupil.style.transform = `translateX(${pupilPositions[0]}px)`;
       setTimeout(() => {
         eyeball.style.transform = `translateX(${eyeballPositions[1]}px)`;
         pupil.style.transform = `translateX(${pupilPositions[1]}px)`;
-      }, 500); // Delay of 500ms
+      }, 0); 
       setTimeout(() => {
         eyeball.style.transform = `translateX(${eyeballPositions[2]}px)`;
         pupil.style.transform = `translateX(${pupilPositions[2]}px)`;
-      }, 1000); // Delay of 1000ms
+      }, 1000); 
       setTimeout(() => {
         eyeball.style.transform = `translateX(${eyeballPositions[3]}px)`;
         pupil.style.transform = `translateX(${pupilPositions[3]}px)`;
-      }, 1500); // Delay of 1500ms
+      }, 5000); 
       setTimeout(() => {
         eyeball.style.transform = `translateX(${eyeballPositions[4]}px)`;
         pupil.style.transform = `translateX(${pupilPositions[4]}px)`;
-      }, 2000); // Delay of 2000ms
+      }, 6000); 
     }
 
-    setInterval(animateLookAround, 2500); // Repeat every 2.5 seconds
+    lookAround()
+    setInterval(lookAround, 10000); // Repeat every 5 seconds
 
     // nose
     
-    const nosePath = 'M 20,100 L 0,20 L 100,0 L 30,35 Z';
+    const nosePath = 'M 0,100 L 0,0 L 100,0 L 20,20 Z';
     const nose = document.querySelector('.nose')
     nose.setAttribute('d', nosePath);
 

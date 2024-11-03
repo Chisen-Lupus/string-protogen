@@ -8,7 +8,6 @@
   <title>Protogen Half-Face Expression</title>
 
   <style>
-    /* Set up basic styling */
     body {
       margin: 0;
       background-color: black;
@@ -23,25 +22,12 @@
       /* testing purpose */
       width: 80vw;
       height: 50vw;
-      border: 1px solid gray; /* Dark gray border */
-      --test-path: 'M10,10 Q 30,0 50,10 T 90,10 M 90,0 T 80,50 T 80,80 T 80,90 Q 70,60 50,50 T 10,50 Z';
-      --path-part1: 'M10,10 Q 30,0 50,10';
-      --path-part2: 'T 90,10 L 90,50';
-      --path-part3: 'Q 70,60 50,50 T 10,50 Z';
-      /* mouth paths */
-      /* --mouth-path-closed: 'M10,20 Q 40,40 70,20 T 130,20 T 190,40 T 250,20'; 
-      --mouth-path-open: 'M10,20 Q 40,50 70,20 T 130,10 T 190,50 T 250,20';   */
-      /* eye mark path */
-      /* eye paths */
-      /* --upper-lid-path: 'M10,20 Q 50,0 90,20';
-      --lower-lid-path: 'M10,35 Q 50,45 90,25';
-      --upper-lid-mask-path: 'M10,15 Q 50,-5 90,15'; 
-      --lower-lid-mask-path: 'M10,40 Q 50,50 90,30';  */
-      /* --pupil-path: 'M50,21 Q48,25 50,29 Q52,25 50,21';  */
+      border: 1px solid gray; 
     }
 
-    /* Define the eye */
-    .eye {
+    /* eye */
+
+    .eye-div {
       position: absolute;
       top: 0%;
       left: 40%;
@@ -49,206 +35,78 @@
       height: 50%;
     }
 
-    /* Black mask for eyelids to create a covering effect */
-    .eye .upper-lid-mask, .eye .lower-lid-mask {
-      fill: black;
-    }
-    .eye .upper-lid-mask {
-      /* d: path(var(--upper-lid-mask-path)); */
-      /* animation: upper-blink 3s infinite; */
+    /* eyelids and masks */
+    .eye-div .upper-lid, .eye-div .lower-lid {
+      fill: red;
       transition: d 0.1s ease-in-out;
     }
-    .eye .lower-lid-mask {
-      /* d: path(var(--lower-lid-mask-path)); */
-      /* animation: lower-blink 3s infinite; */
-      /* transform: translateY(20px); Adjust positioning as needed */
+    .eye-div .upper-mask, .eye-div .lower-mask {
+      fill: black;
       transition: d 0.1s ease-in-out;
     }
 
-    /* Red eyelids */
-    .eye .upper-lid, .eye .lower-lid {
-      fill: red;
-    }
-    .eye .upper-lid {
-      /* d: path(var(--upper-lid-path)); */
-      /* animation: upper-blink 3s infinite; */
-      transition: d 0.1s ease-in-out;
-    }
-    .eye .lower-lid {
-      /* d: path(var(--lower-lid-path)); */
-      /* animation: lower-blink 3s infinite; */
-      transition: d 0.1s ease-in-out;
-    }
-    
-    .eye .eye-svg {
-      position: absolute;
-      /* z-index: 2; Ensure eyelids (and masks) are above the eyeball */
-    }
-    
+    /* eyeball and pupil */
     .eyeball {
-      /* z-index: 1; Ensure eyeball is underneath */
       position: absolute;
       fill: pink;
-
       transition: transform 0.1s ease-in-out;
-      /* animation: look-around-eyeball 10s infinite ease-in-out; */
     }
     .pupil {
       fill: black;
-      /* d: path(var(--pupil-path)); */
-
       transition: transform 0.1s ease-in-out;
-      /* animation: look-around-pupil 10s infinite ease-in-out; */
     }
 
-    /* Define the eye mark with curved edges */
+    /* eye mark */
 
-    .eye-mark {
+    .eye-mark-div {
       position: absolute;
       top: 28%;
       left: 45%;
       width: 50%;
       height: 30%;
-      /* animation: pulse 5s infinite; */
     }
-    .eye-mark-path {
+    .eye-mark {
       fill: red;
-      /* d: path(var(--eye-mark-path-1) + var(--eye-mark-path-2)); */
     }
 
-    /* Define the nose */
+    /* nose */
 
-    .nose {
+    .nose-div {
       position: absolute;
       top: 5%;
       left: 5%;
       width: 15%;
       height: 25%;
-      background-color: red;
-      /* border-radius: 50%; */
-      /* clip-path: polygon(20% 100%, 0 20%, 100% 0, 30% 35%); */
-      /* transform: rotate(45deg); */
     }
-    .nose-path {
+    .nose {
       fill: red;
     }
 
-    /* Define the mouth using SVG */
-    .mouth {
+    /* mouth */
+
+    .mouth-div {
       position: absolute;
       bottom: 00%;
       left: 0%;
       width: 100%;
       height: 60%;
     }
-    .mouth-path {
+    .mouth {
       fill: none;
       stroke: red;
       stroke-width: 2;
       stroke-linecap: round;
-      /* animation: smile 10s infinite; */
       transition: d 0.1s ease-in-out;
     }
 
-    /* for testing purpose */
+    /* testing purpose */
 
-    .test {
-      position: absolute;
-      bottom: 0%;
-      left: 0%;
-      width: 100%;
-      height: 100%;
-    }
-    .test path {
-      fill: red;
-      /* d: path(var(--test-path)); */
-      /* d: path(var(--path-part1) var(--path-part2) var(--path-part3)); */
-    }
     .hidden {
       display: none;
     }
     .showbox {
       background-color: rgba(255, 255, 255, 0.1); 
     }
-
-    /* Animations */
-    @keyframes upper-blink {
-      0%, 87% {
-        transform: translateY(0); /* Default position */
-      }
-      92%, 95% {
-        transform: translateY(15px); /* Move down to cover part of the eyeball */
-      }
-      100% {
-        transform: translateY(0); /* Move back up */
-      }
-    }
-
-    @keyframes lower-blink {
-      0%, 87% {
-        transform: translateY(0); /* Default position */
-      }
-      92%, 95% {
-        transform: translateY(-5px); /* Move up to cover part of the eyeball */
-      }
-      100% {
-        transform: translateY(0); /* Move back down */
-      }
-    }
-    /* @keyframes smile {
-      0%, 50%, 100% {
-        d: path(var(--mouth-path-closed));
-      }
-      25%, 75% {
-        d: path(var(--mouth-path-open));
-      }
-    }
-    @keyframes pulse {
-      0%, 100% {
-        transform: scale(1);
-      }
-      50% {
-        transform: scale(1.05);
-      }
-    } */
-
-    @keyframes look-around-eyeball {
-      0%, 20% {
-        transform: translateX(0); /* Centered */
-      }
-      25%, 35% {
-        transform: translateX(-3px); /* Slightly left */
-      }
-      40%, 60% {
-        transform: translateX(0); /* Centered */
-      }
-      65%, 75% {
-        transform: translateX(3px); /* Slightly right */
-      }
-      80%, 100% {
-        transform: translateX(0); /* Centered */
-      }
-    }
-
-    /* Animation for the pupil */
-    @keyframes look-around-pupil {
-      0%, 20% {
-        transform: translateX(0); /* Centered */
-      }
-      25%, 35% {
-        transform: translateX(-5px); /* Further left than the eyeball */
-      }
-      40%, 60% {
-        transform: translateX(0); /* Centered */
-      }
-      65%, 75% {
-        transform: translateX(5px); /* Further right than the eyeball */
-      }
-      80%, 100% {
-        transform: translateX(0); /* Centered */
-      }
-    }
-
 
   </style>
 
@@ -258,37 +116,36 @@
 
   <div class='canvas'>
 
-    <!-- Eye -->
-    <div class='eye showbox'>
-      <svg viewBox='0 0 100 50' class='eye-svg'>
-        <!-- <circle class='eyeball' cx='50' cy='25' r='10' /> -->
+    <!-- eye -->
+    <div class='eye-div showbox'>
+      <svg viewBox='0 0 100 50'>
         <circle class='eyeball' />
         <path class='pupil' />
-        <path class='upper-lid-mask' />
-        <path class='lower-lid-mask' />
+        <path class='upper-mask' />
+        <path class='lower-mask' />
         <path class='upper-lid' />
         <path class='lower-lid' />
       </svg>
     </div>
 
-    <!-- Nose -->
-    <div class='nose showbox'>
+    <!-- nose -->
+    <div class='nose-div showbox'>
       <svg viewBox='0 0 100 100'>
-        <path class='nose-path' />
+        <path class='nose' />
       </svg>
     </div>
 
-    <!-- Eye mark -->
-    <div class='eye-mark showbox'>
+    <!-- eye mark -->
+    <div class='eye-mark-div showbox'>
       <svg viewBox='0 0 100 100'>
-        <path class='eye-mark-path' />
+        <path class='eye-mark' />
       </svg>
     </div>
 
-    <!-- Mouth  -->
-    <div class='mouth showbox'>
+    <!-- mouth  -->
+    <div class='mouth-div showbox'>
       <svg viewBox='0 0 100 100'>
-        <path class='mouth-path' />
+        <path class='mouth' />
       </svg>
     </div>
 
@@ -317,22 +174,22 @@
       L 55,65 T 70,56 T 85,47 T 92,45
       L 92,45 T 80,58 T 60,80 T 40,92 T 15,93 T 5,90
     `;
-    const eyeMark = document.querySelector('.eye-mark-path')
+    const eyeMark = document.querySelector('.eye-mark')
     eyeMark.setAttribute('d', eyeMarkPath.trim());
 
     // mouth
 
     const mouthPathClosed = 'M10,20 Q 40,40 70,20 T 130,20 T 190,40 T 250,20';
     const mouthPathOpen = 'M10,20 Q 40,50 70,20 T 130,10 T 190,50 T 250,20';
-    const mouthPath = document.querySelector('.mouth-path');
-    mouthPath.setAttribute('d', mouthPathClosed);
+    const mouth = document.querySelector('.mouth');
+    mouth.setAttribute('d', mouthPathClosed);
 
     function toggleMouth() {
-      const currentPath = mouthPath.getAttribute('d');
+      const currentPath = mouth.getAttribute('d');
       if (currentPath===mouthPathClosed) {
-        mouthPath.setAttribute('d', mouthPathOpen);
+        mouth.setAttribute('d', mouthPathOpen);
       } else {
-        mouthPath.setAttribute('d', mouthPathClosed);
+        mouth.setAttribute('d', mouthPathClosed);
       }
     }
 
@@ -351,43 +208,42 @@
     const upperMaskPathClose = 'M10,25 Q 50,5 90,25';
     const lowerMaskPathClose = 'M10,30 Q 50,40 90,20';
     // get css variable
-    const upperLidPath = document.querySelector('.upper-lid');
-    const lowerLidPath = document.querySelector('.lower-lid');
-    const upperMaskPath = document.querySelector('.upper-lid-mask');
-    const lowerMaskPath = document.querySelector('.lower-lid-mask');
-    // Initialize to open state
-    upperLidPath.setAttribute('d', upperLidPathOpen);
-    lowerLidPath.setAttribute('d', lowerLidPathOpen);
-    upperMaskPath.setAttribute('d', upperMaskPathOpen);
-    lowerMaskPath.setAttribute('d', lowerMaskPathOpen);
+    const upperLid = document.querySelector('.upper-lid');
+    const lowerLid = document.querySelector('.lower-lid');
+    const upperMask = document.querySelector('.upper-mask');
+    const lowerMask = document.querySelector('.lower-mask');
+    // initialize to open state
+    upperLid.setAttribute('d', upperLidPathOpen);
+    lowerLid.setAttribute('d', lowerLidPathOpen);
+    upperMask.setAttribute('d', upperMaskPathOpen);
+    lowerMask.setAttribute('d', lowerMaskPathOpen);
 
     function blinkEye() {
-      // Close eye first
-      upperLidPath.setAttribute('d', upperLidPathClose);
-      lowerLidPath.setAttribute('d', lowerLidPathClose);
-      upperMaskPath.setAttribute('d', upperMaskPathClose);
-      lowerMaskPath.setAttribute('d', lowerMaskPathClose);
-      // Reopen eye after a delay
+      // close eye first
+      upperLid.setAttribute('d', upperLidPathClose);
+      lowerLid.setAttribute('d', lowerLidPathClose);
+      upperMask.setAttribute('d', upperMaskPathClose);
+      lowerMask.setAttribute('d', lowerMaskPathClose);
+      // reopen eye after a delay
       setTimeout(() => {
-        upperLidPath.setAttribute('d', upperLidPathOpen);
-        lowerLidPath.setAttribute('d', lowerLidPathOpen);
-        upperMaskPath.setAttribute('d', upperMaskPathOpen);
-        lowerMaskPath.setAttribute('d', lowerMaskPathOpen);
-      }, 200); // Delay before reopening
+        upperLid.setAttribute('d', upperLidPathOpen);
+        lowerLid.setAttribute('d', lowerLidPathOpen);
+        upperMask.setAttribute('d', upperMaskPathOpen);
+        lowerMask.setAttribute('d', lowerMaskPathOpen);
+      }, 200); // delay before reopening
     }
 
-    // Blink every 1 second (adjust as needed)
+    // blink every 1 second (adjust as needed)
     setInterval(blinkEye, 5000);
 
     // pupil
 
-    const eyeball = document.querySelector('.eyeball');
-    const pupil = document.querySelector('.pupil');
     const eyeballAttributes = {cx: 50, cy: 25, r: 10};
     const pupilPath = 'M50,21 Q48,25 50,29 Q52,25 50,21'; 
+    const eyeball = document.querySelector('.eyeball');
+    const pupil = document.querySelector('.pupil');
     eyeball.setAttributes(eyeballAttributes);
     pupil.setAttribute('d', pupilPath);
-
     const eyeballPositions = [0, -3, 0, 3, 0];  
     const pupilPositions = [0, -5, 0, 5, 0];  
 
@@ -417,7 +273,7 @@
     // nose
     
     const nosePath = 'M 20,100 L 0,20 L 100,0 L 30,35 Z';
-    const nose = document.querySelector('.nose-path')
+    const nose = document.querySelector('.nose')
     nose.setAttribute('d', nosePath);
 
   </script>

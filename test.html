@@ -20,8 +20,10 @@
     .canvas {
       position: absolute;
       /* testing purpose */
-      width: 100vw; /* 80vw */ 
-      height: 62.5vw; /* 50vw */ 
+      /* width: 80vw;
+      height: 50vw; */
+      width: 100vw; 
+      height: 62.5vw; 
       border: 1px solid gray; 
     }
 
@@ -66,8 +68,8 @@
     .eye-mark-div {
       position: absolute;
       top: 27%;
-      left: 50%;
-      width: 48%;
+      left: 55%;
+      width: 43%;
       height: 30%;
     }
     .eye-mark {
@@ -91,7 +93,7 @@
 
     .mouth-div {
       position: absolute;
-      bottom: 00%;
+      bottom: 0%;
       left: 0%;
       width: 100%;
       height: 60%;
@@ -134,17 +136,17 @@
       </svg>
     </div>
 
-    <!-- nose -->
-    <div class='nose-div'>
-      <svg viewBox='0 0 100 100'>
-        <path class='nose' />
-      </svg>
-    </div>
-
     <!-- eye mark -->
     <div class='eye-mark-div'>
       <svg viewBox='0 0 100 100'>
         <path class='eye-mark' />
+      </svg>
+    </div>
+
+    <!-- nose -->
+    <div class='nose-div'>
+      <svg viewBox='0 0 100 100'>
+        <path class='nose' />
       </svg>
     </div>
 
@@ -164,42 +166,13 @@
 
   <script>
 
-    // utility functions
+    // utility function(s)
 
     Element.prototype.setAttributes = function(attributes) {
       for (const key in attributes) {
         this.setAttribute(key, attributes[key]);
       }
     };
-
-    // eye mark
-
-    const eyeMarkPath = `
-      M 5,36 T 20,32 T 60,17 T 90,5 T 95,4
-      L 95,4 T 85,10 T 65,21 T 55,26
-      L 55,26 T 70,22 T 85,18 T 92,17
-      L 92,17 T 80,23 T 60,32 T 40,36 T 15,37 T 5,36
-    `.trim();
-    const eyeMark = document.querySelector('.eye-mark')
-    eyeMark.setAttribute('d', eyeMarkPath);
-
-    // mouth
-
-    const mouthPathClose = 'M1,28 L 20,35 L 50,27 L 68,32 L 90,11 L 75,13 L 81 10';
-    const mouthPathOpen = 'M1,28 L 20,36 L 50,26 L 68,33 L 90,9 L 75,12 L 81 8';
-    const mouth = document.querySelector('.mouth');
-    mouth.setAttribute('d', mouthPathClose);
-
-    function toggleMouth() {
-      const currentPath = mouth.getAttribute('d');
-      if (currentPath===mouthPathClose) {
-        mouth.setAttribute('d', mouthPathOpen);
-      } else {
-        mouth.setAttribute('d', mouthPathClose);
-      }
-    }
-
-    setInterval(toggleMouth, 3000);
 
     // eyelid
 
@@ -256,7 +229,7 @@
     // eyeball and pupil
 
     const eyeballAttributes = {cx: 50, cy: 15, r: 23};
-    const eyeBaseAttributes = {cx: 46, cy: -6, r: 50};
+    const eyeBaseAttributes = {cx: 47, cy: -8, r: 50};
     const pupilPath = 'M50,-10 Q 45,20 50,33 Q 55,20 50,-10'; 
     const eyeball = document.querySelector('.eyeball');
     const eyeBase = document.querySelector('.eye-base');
@@ -291,11 +264,40 @@
     lookAround()
     setInterval(lookAround, 10000); // Repeat every 5 seconds
 
+    // eye mark
+
+    const eyeMarkPath = `
+      M 5,36 T 20,32 T 60,17 T 90,5 T 95,4
+      L 95,4 T 85,10 T 65,21 T 55,26
+      L 55,26 T 70,22 T 85,18 T 92,17
+      L 92,17 T 80,23 T 60,32 T 40,36 T 15,37 T 5,36
+    `.trim();
+    const eyeMark = document.querySelector('.eye-mark')
+    eyeMark.setAttribute('d', eyeMarkPath);
+
     // nose
     
     const nosePath = 'M 0,100 L 0,0 L 100,0 L 20,20 Z';
     const nose = document.querySelector('.nose')
     nose.setAttribute('d', nosePath);
+
+    // mouth
+
+    const mouthPathClose = 'M1,28 L 20,35 L 50,27 L 68,32 L 90,10 L 75,12 L 81 9';
+    const mouthPathOpen = 'M1,28 L 20,36 L 50,26 L 68,33 L 90,8 L 75,11 L 81 7';
+    const mouth = document.querySelector('.mouth');
+    mouth.setAttribute('d', mouthPathClose);
+
+    function toggleMouth() {
+      const currentPath = mouth.getAttribute('d');
+      if (currentPath===mouthPathClose) {
+        mouth.setAttribute('d', mouthPathOpen);
+      } else {
+        mouth.setAttribute('d', mouthPathClose);
+      }
+    }
+
+    setInterval(toggleMouth, 3000);
 
   </script>
 

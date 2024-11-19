@@ -4,40 +4,37 @@
 HTML_FILE_1="$(pwd)/test.html"
 HTML_FILE_2="$(pwd)/test_mirror.html"
 
-# Ensure the DISPLAY variable is set correctly
-export DISPLAY=:0
-
 # Browser command
 BROWSER="chromium"
 
-# Open first window with initial size and get its ID
+# Open first window
 $BROWSER --new-window "file://$HTML_FILE_1" --window-size=800,600 &
 sleep 2  # Adjust delay for Chromium window creation
-first_id=$(xdotool search --class "chromium" | tail -n 1)
-if [ -z "$first_id" ]; then
+
+# Get the identifier of the first window
+first_window=$(swaymsg -t get_tree | jq -r '.. | select(.app_id? and .app_id == "chromium") | .id' | tail -n 1)
+if [ -z "$first_window" ]; then
     echo "Error: Unable to find first Chromium window."
     exit 1
 fi
-echo "Debug: First Window ID is $first_id"
+echo "Debug: First Window ID is $first_window"
 
-# Move the first window to position (0, 0)
-xdotool windowactivate "$first_id"
-xdotool windowmove "$first_id" 0 0
-# Send F11 to the first window to make it fullscreen
-xdotool key --window "$first_id" F11
+# Move the first window to workspace 1 and set fullscreen
+swaymsg "[con_id=$first_window]" move workspace 1
+swaymsg "[con_id=$first_window]" fullscreen
 
-# Open second window with initial size and get its ID
+# Open second window
 $BROWSER --new-window "file://$HTML_FILE_2" --window-size=800,600 &
-sleep 2
-second_id=$(xdotool search --class "chromium" | tail -n 1)
-if [ -z "$second_id" ]; then
+sleep 2  # Adjust delay for Chromium window creation
+
+# Get the identifier of the second window
+second_window=$(swaymsg -t get_tree | jq -r '.. | select(.app_id? and .app_id == "chromium") | .id' | tail -n 1)
+if [ -z "$second_window" ]; then
     echo "Error: Unable to find second Chromium window."
     exit 1
 fi
-echo "Debug: Second Window ID is $second_id"
+echo "Debug: Second Window ID is $second_window"
 
-# Move the second window to position (1920, 0)
-xdotool windowactivate "$second_id"
-xdotool windowmove "$second_id" 1920 0
-# Send F11 to the second window to make it fullscreen
-xdotool key --window "$second_id" F11
+# Move the second window to workspace 2 and set fullscreen
+swaymsg "[con_id=$second_window]" move workspace 2
+swaymsg "[con_id=$second_window]" fullscreen

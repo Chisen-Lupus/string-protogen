@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+  <title>Protogen Half-Face Expression Matrix</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: black;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    canvas {
+      position: absolute;
+      /* testing purpose */
+      /* width: 80vw;
+      height: 50vw; */
+      width: 100vw; 
+      height: 62.5vw; 
+      border: 1px solid gray; 
+    }
+    </style>
+</head>
+<body>
+    <canvas id="matrixCanvas" width="1920" height="1200"></canvas>
+    <script>
+        const canvas = document.getElementById('matrixCanvas');
+        const ctx = canvas.getContext('2d');
+        const cellSize = 60;
+        const circleRadius = 20;
+        const matrixSize = 8;
+
+        const A = [
+            [0x00, 0xff, 0xff, 0xfe, 0xfe, 0xfc, 0xf8, 0xf0],
+            [0x00, 0x00, 0x07, 0x1f, 0x3f, 0x7f, 0x7f, 0x1f],
+            [0x00, 0x00, 0x00, 0x00, 0x70, 0xc0, 0x80, 0x00],
+            [0x00, 0x00, 0x00, 0x00, 0x0e, 0x03, 0x01, 0x00],
+            [0x00, 0x00, 0xe0, 0xf8, 0xfc, 0xfe, 0xfe, 0xf8],
+            [0x00, 0xff, 0xff, 0x7f, 0x7f, 0x3f, 0x1f, 0x0f],
+        ];
+        
+        const B = [
+            [0x00, 0x00, 0xc0, 0xc0, 0x80, 0x00, 0x00, 0x00],
+            [0x00, 0x00, 0x03, 0x07, 0x1f, 0x70, 0xc0, 0x00],
+            [0x00, 0x00, 0x40, 0xe0, 0xb0, 0x18, 0x0d, 0x07],
+            [0x00, 0x00, 0x00, 0x00, 0x21, 0x77, 0xdc, 0x08],
+            [0x00, 0x00, 0x00, 0x00, 0x84, 0xee, 0x3b, 0x10],
+            [0x00, 0x00, 0x02, 0x07, 0x0d, 0x18, 0xb0, 0xe0],
+            [0x00, 0x00, 0xc0, 0xe0, 0xf8, 0x0e, 0x03, 0x00],
+            [0x00, 0x00, 0x03, 0x03, 0x01, 0x00, 0x00, 0x00],
+        ];
+
+        function drawMatrix(matrix, offsetX, offsetY) {
+            for (let i = 0; i < matrixSize; i++) {
+                for (let j = 0; j < matrixSize; j++) {
+                    const isOpaque = (matrix[i] & (1 << (7 - j))) !== 0;
+                    const x = offsetX + j * (cellSize);
+                    const y = offsetY + i * (cellSize);
+                    ctx.beginPath();
+                    ctx.arc(x, y, circleRadius, 0, Math.PI * 2);
+                    ctx.fillStyle = isOpaque ? 'red' : 'rgba(0, 0, 0, 0.1)';
+                    ctx.fill();
+                }
+            }
+        }
+
+        function drawAll() {
+            // Upper matrices
+            drawMatrix(A[0], 900+480, 50); // horizontal spacing 60*8=480
+            drawMatrix(A[1], 900, 50);
+
+            // Lower matrices
+            drawMatrix(B[0], 100+3*480, 700);
+            drawMatrix(B[1], 100+2*480, 700);
+            drawMatrix(B[2], 100+480, 700);
+            drawMatrix(B[3], 100, 700);
+        }
+
+        drawAll();
+    </script>
+</body>
+</html>

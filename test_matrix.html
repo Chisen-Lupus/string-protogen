@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang='en'>
+<html lang="en">
 <head>
-  <meta charset='UTF-8'>
-  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Protogen Half-Face Expression Matrix</title>
+  <link rel="stylesheet" href="errorLogger.css">
   <style>
     body {
       margin: 0;
@@ -12,103 +13,163 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      flex-direction: column;
       height: 100vh;
     }
     canvas {
-      position: absolute;
+      position: relative;
       width: 100vw; 
       height: 62.5vw; 
       border: 1px solid gray; 
+    }
+    #errorLog {
+      width: 90%;
+      max-height: 200px;
+      overflow-y: auto;
+      border: 1px solid red;
+      background-color: #222;
+      color: #f00;
+      font-size: 14px;
+      margin-top: 10px;
+      padding: 10px;
+      box-sizing: border-box;
     }
   </style>
 </head>
 <body>
     <canvas id="matrixCanvas" width="1920" height="1200"></canvas>
-    <script>
+    <div id="errorLog">No errors yet.</div>
+    <script type="module">
+
+        import { setupErrorLogger } from './errorLogger.js';
+        setupErrorLogger();
+
+        nonexistentFunction();
+
         const canvas = document.getElementById('matrixCanvas');
         const ctx = canvas.getContext('2d');
+        const errorLog = document.getElementById('errorLog');
         const cellSize = 60;
         const circleRadius = 20;
         const matrixSize = 8;
 
         // Define matrix data
         const A1 = [
-            [0x00, 0xff, 0xff, 0xfe, 0xfe, 0xfc, 0xf8, 0xf0],
-            [0x00, 0x00, 0x07, 0x1f, 0x3f, 0x7f, 0x7f, 0x1f],
-            [0x00, 0x00, 0x00, 0x00, 0x70, 0xc0, 0x80, 0x00],
-            [0x00, 0x00, 0x00, 0x00, 0x0e, 0x03, 0x01, 0x00],
-            [0x00, 0x00, 0xe0, 0xf8, 0xfc, 0xfe, 0xfe, 0xf8],
-            [0x00, 0xff, 0xff, 0x7f, 0x7f, 0x3f, 0x1f, 0x0f],
+            [0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff],
+            [0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff],
+            [0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff],
+            [0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff],
+            [0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff],
+            [0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff],
         ];
         const B1 = [
-            [0x00, 0x00, 0xc0, 0xc0, 0x80, 0x00, 0x00, 0x00],
-            [0x00, 0x00, 0x03, 0x07, 0x1f, 0x70, 0xc0, 0x00],
-            [0x00, 0x00, 0x40, 0xe0, 0xb0, 0x18, 0x0d, 0x07],
-            [0x00, 0x00, 0x00, 0x00, 0x21, 0x77, 0xdc, 0x08],
-            [0x00, 0x00, 0x00, 0x00, 0x84, 0xee, 0x3b, 0x10],
-            [0x00, 0x00, 0x02, 0x07, 0x0d, 0x18, 0xb0, 0xe0],
-            [0x00, 0x00, 0xc0, 0xe0, 0xf8, 0x0e, 0x03, 0x00],
-            [0x00, 0x00, 0x03, 0x03, 0x01, 0x00, 0x00, 0x00],
+            [0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff],
+            [0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff],
+            [0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff],
+            [0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff],
+            [0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff],
+            [0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff],
+            [0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff],
+            [0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff],
         ];
 
         const A2 = [
-            [0xc0, 0x20, 0x90, 0x50, 0x50, 0x40, 0x80, 0x00],
-            [0x07, 0x08, 0x13, 0x14, 0x13, 0x08, 0x07, 0x00],
-            [0x00, 0x00, 0x00, 0x00, 0x70, 0xc0, 0x80, 0x00],
-            [0x00, 0x00, 0x00, 0x00, 0x0e, 0x03, 0x01, 0x00],
-            [0xe0, 0x10, 0xc8, 0x28, 0xc8, 0x10, 0xe0, 0x00],
-            [0x03, 0x04, 0x09, 0x0a, 0x0a, 0x02, 0x01, 0x00],
+            [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00],
+            [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00],
+            [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00],
+            [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00],
+            [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00],
+            [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00],
         ];
         const B2 = [
-            [0x00, 0x00, 0x00, 0x00, 0x80, 0xe0, 0xe0, 0x00],
-            [0x00, 0x00, 0x70, 0xdc, 0x07, 0x03, 0x01, 0x00],
-            [0x00, 0x00, 0x00, 0x01, 0xcf, 0x78, 0x00, 0x00],
-            [0x00, 0x00, 0x00, 0x07, 0x0d, 0x38, 0x60, 0x00],
-            [0x00, 0x00, 0x00, 0xe0, 0xb0, 0x1c, 0x06, 0x00],
-            [0x00, 0x00, 0x00, 0x80, 0xf3, 0x1e, 0x00, 0x00],
-            [0x00, 0x00, 0x0e, 0x3b, 0xe0, 0xc0, 0x80, 0x00],
-            [0x00, 0x00, 0x00, 0x00, 0x01, 0x07, 0x07, 0x00],
+            [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00],
+            [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00],
+            [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00],
+            [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00],
+            [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00],
+            [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00],
+            [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00],
+            [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00],
         ];
 
+        let progress = 0;
+        let animating = true;
+        let stableTime = 0;
         let toggle = true;
 
-        function drawMatrix(matrix, offsetX, offsetY) {
+        function logError(message) {
+            const errorItem = document.createElement('div');
+            errorItem.textContent = message;
+            errorLog.appendChild(errorItem);
+        }
+
+        window.onerror = function (message, source, lineno, colno, error) {
+            logError(`Error: ${message} at ${source}:${lineno}:${colno}`);
+        };
+
+        function interpolate(a, b, t) {
+            return a * (1 - t) + b * t;
+        }
+
+        function drawMatrix(matrix1, matrix2, offsetX, offsetY) {
             for (let i = 0; i < matrixSize; i++) {
                 for (let j = 0; j < matrixSize; j++) {
-                    const isOpaque = (matrix[i] & (1 << (7 - j))) !== 0;
+                    const isOpaque1 = (matrix1[i] & (1 << (7 - j))) !== 0;
+                    const isOpaque2 = (matrix2[i] & (1 << (7 - j))) !== 0;
+                    const opacity = interpolate(isOpaque1 ? 1 : 0, isOpaque2 ? 1 : 0, progress);
                     const x = offsetX + j * cellSize;
                     const y = offsetY + i * cellSize;
                     ctx.beginPath();
                     ctx.arc(x, y, circleRadius, 0, Math.PI * 2);
-                    ctx.fillStyle = isOpaque ? 'red' : 'rgba(0, 0, 0, 0.1)';
+                    ctx.fillStyle = `rgba(255, 0, 0, ${opacity})`;
                     ctx.fill();
                 }
             }
         }
 
         function drawAll() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            const currentA = toggle ? A1 : A2;
-            const currentB = toggle ? B1 : B2;
+            try {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                const currentA = toggle ? A1 : A2;
+                const currentB = toggle ? B1 : B2;
+                const nextA = toggle ? A2 : A1;
+                const nextB = toggle ? B2 : B1;
 
-            // Upper matrices
-            drawMatrix(currentA[0], 900+480, 50);
-            drawMatrix(currentA[1], 900, 50);
-
-            // Lower matrices
-            drawMatrix(currentB[0], 100+3*480, 700);
-            drawMatrix(currentB[1], 100+2*480, 700);
-            drawMatrix(currentB[2], 100+480, 700);
-            drawMatrix(currentB[3], 100, 700);
+                drawMatrix(currentA, nextA, 900 + 480, 50);
+                drawMatrix(currentA, nextA, 900, 50);
+                drawMatrix(currentB, nextB, 100 + 3 * 480, 700);
+                drawMatrix(currentB, nextB, 100 + 2 * 480, 700);
+                drawMatrix(currentB, nextB, 100 + 480, 700);
+                drawMatrix(currentB, nextB, 100, 700);
+            } catch (err) {
+                logError(`Draw error: ${err.message}`);
+            }
         }
 
-        // Animate every 3 seconds
-        setInterval(() => {
-            toggle = !toggle;
-            drawAll();
-        }, 3000);
+        function animate() {
+            try {
+                if (animating) {
+                    progress += 0.02;
+                    if (progress >= 1) {
+                        progress = 0;
+                        animating = false;
+                        stableTime = 0;
+                        toggle = !toggle;
+                    }
+                } else {
+                    stableTime += 1 / 60;
+                    if (stableTime >= 2) {
+                        animating = true;
+                    }
+                }
+                drawAll();
+                requestAnimationFrame(animate);
+            } catch (err) {
+                logError(`Animation error: ${err.message}`);
+            }
+        }
 
-        drawAll();
+        animate();
     </script>
 </body>
 </html>

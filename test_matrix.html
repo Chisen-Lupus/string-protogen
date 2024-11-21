@@ -75,12 +75,7 @@
         [0x00, 0x00, 0x0e, 0x3b, 0xe0, 0xc0, 0x80, 0x00],
         [0x00, 0x00, 0x00, 0x00, 0x01, 0x07, 0x07, 0x00],
       ];
-
-      let toggle = true;
-      let progress = 0; // Animation progress (0 to 1)
-      let stableTime = 0; // Time to stay stable
-      let animating = true; // Whether the toggle is currently animating
-
+      
       function interpolate(a, b, t) {
         return a * (1 - t) + b * t;
       }
@@ -92,11 +87,15 @@
             const phase_after = (mat_after[i] & (1 << (7 - j))) !== 0;
             const x = offsetX + j * cellSize;
             const y = offsetY + i * cellSize;
+            // Interpolate phase to determine the height of the ellipse
             const phase_now = interpolate(phase_before, phase_after, progress);
+            // Calculate ellipse height based on the phase
+            const ellipseHeight = circleRadius * 2 * phase_now; // Height varies between 0 and full diameter
             ctx.beginPath();
-            ctx.arc(x, y, circleRadius, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(255, 0, 0, ${phase_now})`;
+            ctx.ellipse(x, y, circleRadius, ellipseHeight / 2, 0, 0, Math.PI * 2); // Dynamic height
+            ctx.fillStyle = `rgba(255, 0, 0, 1)`; // Keep color opaque
             ctx.fill();
+
           }
         }
       }
@@ -112,34 +111,26 @@
         drawMatrix(progress, currentB[3], nextB[3], 100, 700);
       }
 
+      let toggle = true; // indicating which is the next matrix
+      let frame = 0; // grame counter
+      let progress = 0; // Animation progress (0 to 1)
+      let ppf = 0.05; // progress per frame
+
       function animate() {
-        if (animating) {
-          // Animate the toggle
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          const currentA = toggle ? A1 : A2;
-          const currentB = toggle ? B1 : B2;
-          const nextA = toggle ? A2 : A1;
-          const nextB = toggle ? B2 : B1;
-          drawAll(progress, currentA, currentB, nextA, nextB);
-          progress += 0.02; // Adjust to 1-second animation
-          if (progress >= 1) {
-            progress = 0; // Reset progress
-            animating = false; // Start stable phase
-            stableTime = 0; // Reset stable time
-            toggle = !toggle; // Swap A1 and A2 to toggle the states
-          }
-        } else {
-          // Stable phase
-          const currentA = toggle ? A1 : A2;
-          const currentB = toggle ? B1 : B2;
-          const nextA = toggle ? A2 : A1;
-          const nextB = toggle ? B2 : B1;
-          drawAll(0, currentA, currentB, nextA, nextB); // Draw the stable state
-          stableTime += 1 / 60; // Increment stable time (assuming 60 FPS)
-          if (stableTime >= 2) {
-            animating = true; // Resume animation after 2 seconds
-          }
+        // Animate the toggle
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const currentA = toggle ? A1 : A2;
+        const currentB = toggle ? B1 : B2;
+        const nextA = toggle ? A2 : A1;
+        const nextB = toggle ? B2 : B1;
+        drawAll(progress, currentA, currentB, nextA, nextB);
+        // set progress
+        if (frame>=180) { // 180 frames is 3s
+          frame = 0;
+          toggle = !toggle;
         }
+        progress = Math.min(frame*ppf, 1);
+        frame += 1;
         requestAnimationFrame(animate);
       }
 

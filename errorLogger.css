@@ -1,7 +1,6 @@
 /* Error Log Styling */
 #errorLog {
     width: 90%;
-    max-height: 200px;
     overflow-y: auto;
     border: 1px solid red;
     background-color: #222;

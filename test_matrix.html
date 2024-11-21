@@ -77,44 +77,73 @@
       ];
 
       let toggle = true;
+      let progress = 0; // Animation progress (0 to 1)
+      let stableTime = 0; // Time to stay stable
+      let animating = true; // Whether the toggle is currently animating
 
-      function drawMatrix(matrix, offsetX, offsetY) {
+      function interpolate(a, b, t) {
+        return a * (1 - t) + b * t;
+      }
+
+      function drawMatrix(progress, mat_before, mat_after, offsetX, offsetY) {
         for (let i = 0; i < matrixSize; i++) {
           for (let j = 0; j < matrixSize; j++) {
-            const isOpaque = (matrix[i] & (1 << (7 - j))) !== 0;
+            const phase_before = (mat_before[i] & (1 << (7 - j))) !== 0;
+            const phase_after = (mat_after[i] & (1 << (7 - j))) !== 0;
             const x = offsetX + j * cellSize;
             const y = offsetY + i * cellSize;
+            const phase_now = interpolate(phase_before, phase_after, progress);
             ctx.beginPath();
             ctx.arc(x, y, circleRadius, 0, Math.PI * 2);
-            ctx.fillStyle = isOpaque ? "red" : "rgba(0, 0, 0, 0.1)";
+            ctx.fillStyle = `rgba(255, 0, 0, ${phase_now})`;
             ctx.fill();
           }
         }
       }
 
-      function drawAll() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        const currentA = toggle ? A1 : A2;
-        const currentB = toggle ? B1 : B2;
-
-        // Upper matrices
-        drawMatrix(currentA[0], 900 + 480, 50);
-        drawMatrix(currentA[1], 900, 50);
-
+      function drawAll(progress, currentA, currentB, nextA, nextB) {
+        // upper matrices
+        drawMatrix(progress, currentA[0], nextA[0], 900 + 480, 50);
+        drawMatrix(progress, currentA[1], nextA[1], 900, 50);
         // Lower matrices
-        drawMatrix(currentB[0], 100 + 3 * 480, 700);
-        drawMatrix(currentB[1], 100 + 2 * 480, 700);
-        drawMatrix(currentB[2], 100 + 480, 700);
-        drawMatrix(currentB[3], 100, 700);
+        drawMatrix(progress, currentB[0], nextB[0], 100 + 3 * 480, 700);
+        drawMatrix(progress, currentB[1], nextB[1], 100 + 2 * 480, 700);
+        drawMatrix(progress, currentB[2], nextB[2], 100 + 480, 700);
+        drawMatrix(progress, currentB[3], nextB[3], 100, 700);
       }
 
-      // Animate every 3 seconds
-      setInterval(() => {
-        toggle = !toggle;
-        drawAll();
-      }, 3000);
+      function animate() {
+        if (animating) {
+          // Animate the toggle
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          const currentA = toggle ? A1 : A2;
+          const currentB = toggle ? B1 : B2;
+          const nextA = toggle ? A2 : A1;
+          const nextB = toggle ? B2 : B1;
+          drawAll(progress, currentA, currentB, nextA, nextB);
+          progress += 0.02; // Adjust to 1-second animation
+          if (progress >= 1) {
+            progress = 0; // Reset progress
+            animating = false; // Start stable phase
+            stableTime = 0; // Reset stable time
+            toggle = !toggle; // Swap A1 and A2 to toggle the states
+          }
+        } else {
+          // Stable phase
+          const currentA = toggle ? A1 : A2;
+          const currentB = toggle ? B1 : B2;
+          const nextA = toggle ? A2 : A1;
+          const nextB = toggle ? B2 : B1;
+          drawAll(0, currentA, currentB, nextA, nextB); // Draw the stable state
+          stableTime += 1 / 60; // Increment stable time (assuming 60 FPS)
+          if (stableTime >= 2) {
+            animating = true; // Resume animation after 2 seconds
+          }
+        }
+        requestAnimationFrame(animate);
+      }
 
-      drawAll();
+      animate();
     </script>
   </body>
 </html>

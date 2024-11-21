@@ -77,7 +77,7 @@
       ];
       
       function interpolate(a, b, t) {
-        return a * (1 - t) + b * t;
+        return a * (1 - t)**2 + b * t**2;
       }
 
       function drawMatrix(progress, mat_before, mat_after, offsetX, offsetY) {
@@ -89,10 +89,8 @@
             const y = offsetY + i * cellSize;
             // Interpolate phase to determine the height of the ellipse
             const phase_now = interpolate(phase_before, phase_after, progress);
-            // Calculate ellipse height based on the phase
-            const ellipseHeight = circleRadius * 2 * phase_now; // Height varies between 0 and full diameter
             ctx.beginPath();
-            ctx.ellipse(x, y, circleRadius, ellipseHeight / 2, 0, 0, Math.PI * 2); // Dynamic height
+            ctx.arc(x, y, circleRadius * phase_now, 0, Math.PI * 2); 
             ctx.fillStyle = `rgba(255, 0, 0, 1)`; // Keep color opaque
             ctx.fill();
 

@@ -27,8 +27,8 @@
   <body>
     <canvas id="matrixCanvas" width="1920" height="1200"></canvas>
     <div id="errorLog">No errors yet.</div>
-    <script type="module">
-      import { setupErrorLogger } from "./errorLogger.js";
+    <script src="./errorLogger.js"></script>
+    <script>
       setupErrorLogger();
 
       const canvas = document.getElementById("matrixCanvas");
